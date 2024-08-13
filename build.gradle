@@ -1,0 +1,62 @@
+defaultTasks 'clean', 'test', 'aggregate'
+
+description = 'Framework for Automation'
+group = 'com.banistmo'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
+    }
+    dependencies {
+        classpath 'net.serenity-bdd:serenity-gradle-plugin:3.2.0'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'net.serenity-bdd.aggregator'
+apply plugin: 'net.serenity-bdd.serenity-gradle-plugin'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+ext {
+    serenityCoreVersion = '3.5.1'
+    junitVersion = '5.8.2'
+    webdrivermanager = '5.3.2'
+    assertJVersion = '3.22.0'
+    slf4jVersion = '1.7.7'
+    logbackVersion = '1.2.10'
+    appiumVersion = '8.5.1'
+}
+
+dependencies {
+    implementation "net.serenity-bdd:serenity-core:${serenityCoreVersion}",
+            "net.serenity-bdd:serenity-screenplay:${serenityCoreVersion}",
+            "net.serenity-bdd:serenity-screenplay-webdriver:${serenityCoreVersion}",
+            "io.appium:java-client:${appiumVersion}"
+
+    testImplementation "net.serenity-bdd:serenity-junit5:${serenityCoreVersion}",
+            "org.junit.jupiter:junit-jupiter-api:${junitVersion}",
+            "net.serenity-bdd:serenity-cucumber:${serenityCoreVersion}",
+            "net.serenity-bdd:serenity-ensure:${serenityCoreVersion}",
+            "org.assertj:assertj-core:${assertJVersion}",
+            "org.slf4j:slf4j-simple:${slf4jVersion}",
+            "ch.qos.logback:logback-classic:${logbackVersion}"
+
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+
+}
+
+gradle.startParameter.continueOnFailure = true
+test.finalizedBy(aggregate)
